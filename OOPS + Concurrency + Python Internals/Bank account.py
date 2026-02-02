@@ -7,7 +7,7 @@ class User:
         self.acc_num=acc_num
         self.name=name
         self.pin=pin
-        self.status=True
+        self.status=status
         self.balance=balance
 
     def to_dict(self):
@@ -34,10 +34,10 @@ class User:
     @staticmethod
     def save_users():
         with open(file_name, "w") as f:
-            json.dump({acc: user.to_dict() for acc, user in users.items()},f,indent=4)
+            json.dump({str(acc): user.to_dict() for acc, user in users.items()},f,indent=4)
     
-    def deposit(self,amount, pin):
-        if self.status and self.pin==pin:
+    def deposit(self,amount):
+        if self.status:
             if amount>0:
                 self.balance+=amount
                 print(f"Deposited ₹{amount}. New Balance: ₹{self.balance}")
@@ -47,8 +47,8 @@ class User:
         else:
             print("Account inactive or wrong PIN.")
 
-    def withdraw(self,amount,pin):
-        if self.status and self.pin==pin:
+    def withdraw(self,amount):
+        if self.status:
             if 0<amount<=self.balance:
                 self.balance-=amount
                 print(f"Withdrawn ₹{amount}. New Balance: ₹{self.balance}")
@@ -58,8 +58,8 @@ class User:
         else:
             print("Account inactive or wrong PIN.")
 
-    def display(self,pin):
-        if self.status and self.pin==pin:
+    def display(self):
+        if self.status:
             print(f"Account Number : {self.acc_num}")
             print(f"Name           : {self.name}")
             print(f"Balance        : ₹{self.balance}")
@@ -74,6 +74,35 @@ class User:
             User.save_users()
         else:
             print("Wrong PIN or inactive account.")
+    
+    def transfer(self,to_acc,amount,pin):
+        if not self.status:
+            print("Sender account inactive.")
+            return
+        if self.pin != pin:
+            print("Wrong PIN.")
+            return
+        if amount <= 0:
+            print("Amount must be positive.")
+            return
+        if to_acc not in users:
+            print("Receiver account not found.")
+            return
+        
+        receiver = users[to_acc]
+        if not receiver.status:
+            print("Receiver account inactive.")
+            return
+
+        if self.balance < amount:
+            print("Insufficient balance.")
+            return
+
+        self.balance -= amount
+        receiver.balance += amount
+        User.save_users()
+        print(f"₹{amount} transferred to Account {to_acc}")
+        print(f"New Balance: ₹{self.balance}")
 
     def close_acc(self,pin):
         if self.status and self.pin==pin:
@@ -90,7 +119,7 @@ class Manager:
 
     def create_account(self,acc_num,name,pin,balance=0):
         if acc_num not in users:
-            users[acc_num]=User(acc_num, name, pin, balance)
+            users[acc_num]=User(acc_num,name,pin,balance)
             print("Account created.")
             User.save_users()
         else:
@@ -99,7 +128,7 @@ class Manager:
     def view_user(self,acc_num):
         if acc_num in users:
             user=users[acc_num]
-            print("Account number: ",acc,"| User name : ",user.name,"| Balance: ",user.balance,"| Account Status: ",user.status)
+            print("Account number: ",acc_num,"| User name : ",user.name,"| Balance: ",user.balance,"| Account Status: ",user.status)
         else:
             print("User not found.")
 
@@ -154,11 +183,11 @@ while True:
 
             if choice==1:
                 amt=float(input("Amount: "))
-                user.deposit(amt, pin)
+                user.deposit(amt)
 
             elif choice==2:
                 amt=float(input("Amount: "))
-                user.withdraw(amt, pin)
+                user.withdraw(amt)
 
             elif choice==3:
                 user.display(pin)
@@ -172,9 +201,13 @@ while True:
                 user.close_acc(pin)
                 break
 
+            elif choice == 6:
+                to_acc = int(input("Receiver Account Number: "))
+                amt = float(input("Amount: "))
+                user.transfer(to_acc, amt, pin)
+
             elif choice==0:
                 break
-
             else:
                 print("Invalid option.")
 
