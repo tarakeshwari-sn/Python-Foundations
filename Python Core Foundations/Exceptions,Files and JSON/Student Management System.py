@@ -94,7 +94,7 @@ while True:
     try:
         choice = int(input("Choice: "))
         if choice == 6:
-            print("Profram exited")
+            print("Program exited")
             break
         elif choice in menu:
             menu[choice]()
