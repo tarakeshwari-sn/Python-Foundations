@@ -4,24 +4,24 @@ import os
 file = "inventory.csv"
 
 class Product:
-    def __init__(self, pid, name, price, qty):
+    def __init__(self,pid,name,price,qty):
         self.pid = str(pid)
         self.name = name.lower()
         self.price = float(price)
         self.qty = int(qty)
 
     def to_row(self):
-        return [self.pid, self.name, self.price, self.qty]
+        return [self.pid,self.name,self.price,self.qty]
 
 class Inventory:
-    def __init__(self, file_name=file):
+    def __init__(self,file_name=file):
         self.file_name = file_name
         self.init_file()
 
     def init_file(self):
         if not os.path.exists(self.file_name):
             with open(self.file_name, "w", newline="") as f:
-                csv.writer(f).writerow(["product_id", "name", "price", "quantity"])
+                csv.writer(f).writerow(["product_id","name","price","quantity"])
 
     def read_all(self):
         with open(self.file_name, "r") as f:
@@ -166,3 +166,4 @@ def menu():
 
         else:
             print("Invalid choice.")
+menu()
