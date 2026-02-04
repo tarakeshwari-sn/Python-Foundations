@@ -25,9 +25,9 @@ class User:
     def load_users():
         global users
         try:
-            with open(file_name, "r") as f:
+            with open(file_name,"r") as f:
                 raw = json.load(f)
-                users = {int(acc): User.from_dict(u) for acc, u in raw.items()}
+                users = {int(acc):User.from_dict(u) for acc, u in raw.items()}
         except FileNotFoundError:
             users = {}
     

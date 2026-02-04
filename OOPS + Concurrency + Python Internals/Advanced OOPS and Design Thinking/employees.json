@@ -1,0 +1,87 @@
+{
+    "employees": [
+        {
+            "emp_id": 101,
+            "emp_name": "Alice Johnson",
+            "emp_dob": "1995-06-12",
+            "emp_role": "Manager",
+            "emp_salary": 50000,
+            "username": "alice",
+            "password": "alice123",
+            "leaves": [
+                {
+                    "date": "01022026",
+                    "reason": "Medical",
+                    "status": "Approved"
+                },
+                {
+                    "date": "29032004",
+                    "reason": "Sick leave",
+                    "status": "Approved"
+                }
+            ]
+        },
+        {
+            "emp_id": 201,
+            "emp_name": "Bob Smith",
+            "emp_dob": "1985-03-22",
+            "emp_role": "Manager",
+            "emp_salary": 80000,
+            "username": "bob",
+            "password": "bob123",
+            "leaves": []
+        },
+        {
+            "emp_id": 301,
+            "emp_name": "Clara Lee",
+            "emp_dob": "1990-11-05",
+            "emp_role": "HR",
+            "emp_salary": 70000,
+            "username": "clara",
+            "password": "clara123",
+            "leaves": []
+        },
+        {
+            "emp_id": 104,
+            "emp_name": "Tara",
+            "emp_dob": "29032005",
+            "emp_role": "Manager",
+            "emp_salary": 30000.0,
+            "username": "tara",
+            "password": "tara12345",
+            "leaves": []
+        }
+    ],
+    "attendance": {
+        "28032005": {
+            "present": [],
+            "absent": [],
+            "holiday": false
+        },
+        "29032005": {
+            "present": [],
+            "absent": [],
+            "holiday": true
+        },
+        "01022026": {
+            "present": [
+                201,
+                301
+            ],
+            "absent": [
+                101
+            ],
+            "holiday": false
+        },
+        "29032004": {
+            "present": [
+                201,
+                301
+            ],
+            "absent": [
+                101
+            ],
+            "holiday": false
+        }
+    }
+}
