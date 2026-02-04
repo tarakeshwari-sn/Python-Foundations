@@ -2,12 +2,12 @@ from datetime import datetime
 
 def is_weekend(date_str):
     date_obj = datetime.strptime(date_str, "%d%m%Y")
-    return date_obj.weekday() >= 5   # Saturday, Sunday
+    return date_obj.weekday() >= 5   #Saturday,Sunday
 
 class AttendanceTracker:
     def __init__(self):
-        self.attendance_record = {}   # {date: {"present": set(), "holiday": bool}}
-        self.students = {}            # {student_id: student_name}
+        self.attendance_record = {}   #{date: {"present": set(), "holiday": bool}}
+        self.students = {}            #{student_id: student_name}
 
 class Student:
     def __init__(self, name, user_id):
