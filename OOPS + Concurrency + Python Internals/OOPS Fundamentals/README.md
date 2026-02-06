@@ -1,52 +1,48 @@
 # Banking System 
-This project is a console-based banking system developed using  JSON-based storage.  
+Console-based banking system developed using  JSON-based storage.  
 
-It supports User and Manager roles with persistent data storage.
+It supports User and Manager roles with persistent data storage and simulates real world working operations such as creating account,deposits,withdrawals etc.
 
-The system simulates real-world banking operations such as deposits, withdrawals, account creation, account freezing, and loan eligibility checks.
+## Roles and Operations: 
 
+Each user of the system needs to log in using their id and password to perform operations with respect to their role.
 
-## Design Approach
+### User
+1. deposit(amt)
+2. withdraw(amt)
+3. display(pin)
+4. update_pin(old_pin,new_pin)
+5. close_Acc(pin)
+6. transfer(to_acc, amt, pin)
 
-The application is structured around real-world banking entities, modeled as Python classes i.e; User and Manager.
+### Manager
+1. create_account(acc, uname, pin, bal) -- for user
+2. view_user(acc)
+3. freeze_account(acc) --- of user
+4. loan_eligibility(acc)
+5. view_all_users()
 
-## User Class
-The `User` class represents a bank customer and encapsulates:
-- Account details
-- PIN-based authentication
-- Transaction operations
+## Concepts Used: 
+ Classes and objects - Defined real-world entities as classes and created multiple objects at runtime. Object methods (user.deposit(), manager.create_account() ) are used for implementation.
 
-Each user object manages its own data and behavior (Encapsulation).
+init - Used to initialize object state and set default values. It prepares object for use.
 
-## Manager Class
-The `Manager` class represents bank staff with administrative privileges, including:
-- Creating new user accounts
-- Viewing user details
-- Freezing user accounts
-- Checking loan eligibility
+Instance variables - Each object has them individually.
 
-This design enforces role-based access control.
+## Storage: 
+Data is stored in a JSON file in the following format: 
 
-## Data Storage Using JSON
-- User data is stored in a JSON file: `bank_details.json`
-- Data is loaded when the application starts
-- All updates are saved immediately after any modification
-
-This ensures data remains intact across program executions.
-
-
-## In-Memory Data Storage
 ```users = { account_number: User_object }```
 
-## Serialization and Deserialization
+## Serialization and Deserialization: 
 
 To convert objects to and from JSON:
 
-to_dict()	: Converts a User object into a dictionary.
+```to_dict()```	: Converts a User object into a dictionary.
 
-from_dict()	: Recreates a User object from stored JSON
+```from_dict()```	: Recreates a User object from stored JSON
 
-## Static Methods for Shared Operations
+## Static Methods for Shared Operations: 
 
 The following methods are declared as ```@staticmethod```:
 
@@ -56,29 +52,37 @@ The following methods are declared as ```@staticmethod```:
 
 They operate on shared application data (users) and do not depend on a specific object instance.
 
-## Interaction with user
-It uses menu driven console to interact with user and perform operations they have permission to perform.
 
 # Inventory System 
-This project is a console-based inventory management system developed using CSV-based storage.  
+Console-based inventory system developed using CSV-based storage.  
 
-The system simulates real-world inventory operations such as product creation,quantity updation, stock input and stock output.
+## Operations: 
+1. create_product()
+2. delete_product()
+3. update_product() --- price
+4. view_all() ---view all products
+5. search(value) --- search specific product
+6. stock_in(pid,qty) --- stock in of specific product
+7. stock_out(pid_qty) --- stock out of specific product
 
-## Design Approach
+Analytics:
+1. inv.low_stock_products()
+2. out_of_stock_products()
+3. total_inventory_value()
+4. highest_priced_products()
+5. lowest_priced_products()
+6. product_summary()
 
+## Concepts Used: 
+ Classes and objects - Defined real-world entities as classes and created multiple objects at runtime. Object methods are used for implementation.
 
+init - Used to initialize object state and set default values. It prepares object for use.
 
-## Data Storage Using JSON
-- User data is stored in a CSV file: `inventory.csv`
-- Data is loaded when the application starts.
-- All updates are saved immediately after any modification.
+Instance and class variables - Each object has them individually.
 
-This ensures data remains intact across program executions.
-
-
-## In-Memory Data Storage
-```users = { account_number: User_object }```
-
-
-## Interaction with user
-It uses menu driven console to interact with user and perform operations they have permission to perform.
+## Storage: 
+Data is stored in CSV in the following format:
+```
+product_id,name,price,quantity
+1,chocolates,35.0,33
+```

@@ -176,6 +176,7 @@ while True:
                 3. Display Balance
                 4. Change PIN
                 5. Close Account
+                6. Transfer
                 0. Exit
                 """)
         while True:
