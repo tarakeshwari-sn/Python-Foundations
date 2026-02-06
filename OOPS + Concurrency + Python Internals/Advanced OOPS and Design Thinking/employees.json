@@ -50,6 +50,16 @@
             "username": "tara",
             "password": "tara12345",
             "leaves": []
+        },
+        {
+            "emp_id": 333,
+            "emp_name": "tara",
+            "emp_dob": "29030456",
+            "emp_role": "Manager",
+            "emp_salary": 20000.0,
+            "username": "tara",
+            "password": "12345",
+            "leaves": []
         }
     ],
     "attendance": {
@@ -59,9 +69,19 @@
             "holiday": false
         },
         "29032005": {
-            "present": [],
-            "absent": [],
-            "holiday": true
+            "present": [
+                1,
+                2,
+                3
+            ],
+            "absent": [
+                101,
+                104,
+                201,
+                301,
+                333
+            ],
+            "holiday": false
         },
         "01022026": {
             "present": [

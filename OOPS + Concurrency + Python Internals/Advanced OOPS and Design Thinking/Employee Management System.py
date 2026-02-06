@@ -212,9 +212,8 @@ class EmployeeManagementSystem:
                 self.save_data()
             elif c == 0:
                 break
-
 if __name__ == "__main__":
-    ems=EmployeeManagementSystem("OOPS + Concurrency + Python Internals/Advanced OOPS and Design Thinking/employees.json")
+    ems=EmployeeManagementSystem("Advanced OOPS and Design Thinking/employees.json")
     while True:
         print("\nLogin")
         user = ems.login()
