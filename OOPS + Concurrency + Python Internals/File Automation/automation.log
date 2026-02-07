@@ -1,0 +1,40 @@
+[INFO] 2026-02-07 22:50:00 - Moved error_dump_1.txt to processed_data\errors
+[INFO] 2026-02-07 22:50:00 - Moved error_dump_0.txt to processed_data\errors
+[INFO] 2026-02-07 22:50:00 - Moved error_dump_2.txt to processed_data\errors
+[INFO] 2026-02-07 22:50:00 - Moved error_dump_3.txt to processed_data\errors
+[INFO] 2026-02-07 22:50:00 - Moved error_dump_4.txt to processed_data\errors
+[INFO] 2026-02-07 22:50:00 - Moved error_dump_6.txt to processed_data\errors
+[INFO] 2026-02-07 22:50:00 - Moved error_dump_5.txt to processed_data\errors
+[INFO] 2026-02-07 22:50:00 - Moved error_dump_8.txt to processed_data\errors
+[INFO] 2026-02-07 22:50:00 - Moved error_dump_7.txt to processed_data\errors
+[INFO] 2026-02-07 22:50:00 - Moved error_dump_9.txt to processed_data\errors
+[INFO] 2026-02-07 22:50:03 - Processed CSV sales_0.csv | Total Amount: 101089936.44999883
+[INFO] 2026-02-07 22:50:03 - Moved sales_0.csv to processed_data\sales
+[INFO] 2026-02-07 22:50:03 - Processed CSV sales_1.csv | Total Amount: 101104029.57999967
+[INFO] 2026-02-07 22:50:03 - Processed CSV sales_2.csv | Total Amount: 101023239.63999902
+[INFO] 2026-02-07 22:50:03 - Processed CSV sales_3.csv | Total Amount: 101019048.6299993
+[INFO] 2026-02-07 22:50:03 - Moved sales_1.csv to processed_data\sales
+[INFO] 2026-02-07 22:50:03 - Moved sales_2.csv to processed_data\sales
+[INFO] 2026-02-07 22:50:03 - Moved sales_3.csv to processed_data\sales
+[INFO] 2026-02-07 22:50:03 - Processed CSV sales_4.csv | Total Amount: 100976350.36999883
+[INFO] 2026-02-07 22:50:04 - Moved sales_4.csv to processed_data\sales
+[INFO] 2026-02-07 22:50:07 - Processed CSV sales_7.csv | Total Amount: 100909753.65999883
+[INFO] 2026-02-07 22:50:07 - Moved sales_7.csv to processed_data\sales
+[INFO] 2026-02-07 22:50:07 - Processed CSV sales_5.csv | Total Amount: 100968888.84999844
+[INFO] 2026-02-07 22:50:07 - Processed CSV sales_8.csv | Total Amount: 101245888.78000093
+[INFO] 2026-02-07 22:50:07 - Moved user_logs_0.json to processed_data\logs
+[INFO] 2026-02-07 22:50:07 - Moved sales_5.csv to processed_data\sales
+[INFO] 2026-02-07 22:50:07 - Moved sales_8.csv to processed_data\sales
+[INFO] 2026-02-07 22:50:07 - Moved user_logs_1.json to processed_data\logs
+[INFO] 2026-02-07 22:50:07 - Processed CSV sales_6.csv | Total Amount: 100865286.82000162
+[INFO] 2026-02-07 22:50:07 - Moved user_logs_2.json to processed_data\logs
+[INFO] 2026-02-07 22:50:07 - Moved user_logs_3.json to processed_data\logs
+[INFO] 2026-02-07 22:50:07 - Moved sales_6.csv to processed_data\sales
+[INFO] 2026-02-07 22:50:07 - Moved user_logs_4.json to processed_data\logs
+[INFO] 2026-02-07 22:50:07 - Moved user_logs_5.json to processed_data\logs
+[INFO] 2026-02-07 22:50:07 - Moved user_logs_6.json to processed_data\logs
+[INFO] 2026-02-07 22:50:07 - Moved user_logs_7.json to processed_data\logs
+[INFO] 2026-02-07 22:50:07 - Moved user_logs_8.json to processed_data\logs
+[INFO] 2026-02-07 22:50:07 - Moved user_logs_9.json to processed_data\logs
+[INFO] 2026-02-07 22:50:07 - Processed CSV sales_9.csv | Total Amount: 100724177.41000247
+[INFO] 2026-02-07 22:50:07 - Moved sales_9.csv to processed_data\sales
