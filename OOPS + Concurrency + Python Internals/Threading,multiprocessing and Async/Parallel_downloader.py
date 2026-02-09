@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 dur=Path("downloads")
 dur.mkdir(exist_ok=True)
 
-chunk_size=1024 * 32  
+chunk_size=1024*32  
 
 def get_filename(url,index):
     path=urlparse(url).path
@@ -46,7 +46,7 @@ async def main(urls):
 
 print("Parallel file downloader")
 print("Enter URLs to download (type '0' to finish):")
-urls = []
+urls=[]
 while True:
     url = input(">Link:  ").strip()
     if url.lower()=="done":

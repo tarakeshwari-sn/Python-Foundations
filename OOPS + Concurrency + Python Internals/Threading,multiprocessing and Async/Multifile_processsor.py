@@ -10,7 +10,6 @@ def process_file(file_path):
 
     data = {"file":file_path.name,"lines":text.count("\n")+ 1,
             "words":len(text.split()),"chars":len(text)}
-
     with lock:
         results.append(data)
 

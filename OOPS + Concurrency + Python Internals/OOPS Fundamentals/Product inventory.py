@@ -1,9 +1,8 @@
-import csv
-import os
+import csv,os
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-csv_file = os.path.join(current_dir, "inventory.csv")
-os.makedirs(os.path.dirname(csv_file), exist_ok=True)
+current_dir=os.path.dirname(os.path.abspath(__file__))
+csv_file=os.path.join(current_dir,"inventory.csv")
+os.makedirs(os.path.dirname(csv_file),exist_ok=True)
 
 class Product:
     def __init__(self,pid,name,price,qty):
