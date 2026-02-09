@@ -38,3 +38,23 @@
 [INFO] 2026-02-07 22:50:07 - Moved user_logs_9.json to processed_data\logs
 [INFO] 2026-02-07 22:50:07 - Processed CSV sales_9.csv | Total Amount: 100724177.41000247
 [INFO] 2026-02-07 22:50:07 - Moved sales_9.csv to processed_data\sales
+[INFO] 2026-02-09 15:30:38 - Processed EXCEL report_1.xlsx | Total Score: 10018413.140000217
+[INFO] 2026-02-09 15:30:38 - Moved report_1.xlsx to processed_data\reports
+[INFO] 2026-02-09 15:30:40 - Processed EXCEL report_2.xlsx | Total Score: 10005907.66999996
+[INFO] 2026-02-09 15:30:41 - Moved report_2.xlsx to processed_data\reports
+[INFO] 2026-02-09 15:30:41 - Processed EXCEL report_0.xlsx | Total Score: 9985846.920000004
+[INFO] 2026-02-09 15:30:41 - Moved report_0.xlsx to processed_data\reports
+[INFO] 2026-02-09 15:30:45 - Processed EXCEL report_3.xlsx | Total Score: 10005056.2399998
+[INFO] 2026-02-09 15:30:45 - Processed EXCEL report_4.xlsx | Total Score: 10020223.710000057
+[INFO] 2026-02-09 15:30:45 - Moved report_3.xlsx to processed_data\reports
+[INFO] 2026-02-09 15:30:45 - Moved report_4.xlsx to processed_data\reports
+[INFO] 2026-02-09 15:31:20 - Processed EXCEL report_5.xlsx | Total Score: 10016672.109999934
+[INFO] 2026-02-09 15:31:20 - Moved report_5.xlsx to processed_data\reports
+[INFO] 2026-02-09 15:31:26 - Processed EXCEL report_6.xlsx | Total Score: 9987406.679999946
+[INFO] 2026-02-09 15:31:26 - Moved report_6.xlsx to processed_data\reports
+[INFO] 2026-02-09 15:31:30 - Processed EXCEL report_7.xlsx | Total Score: 10012544.279999873
+[INFO] 2026-02-09 15:31:30 - Moved report_7.xlsx to processed_data\reports
+[INFO] 2026-02-09 15:31:30 - Processed EXCEL report_8.xlsx | Total Score: 10019051.220000127
+[INFO] 2026-02-09 15:31:30 - Moved report_8.xlsx to processed_data\reports
+[INFO] 2026-02-09 15:31:30 - Processed EXCEL report_9.xlsx | Total Score: 10017505.389999937
+[INFO] 2026-02-09 15:31:30 - Moved report_9.xlsx to processed_data\reports
