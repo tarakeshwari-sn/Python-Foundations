@@ -17,7 +17,7 @@ def is_structured_csv(file_path):
 
 def is_semi_structured_json(file_path):
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path,"r",encoding="utf-8") as f:
             json.load(f)
         return True
     except:
@@ -55,8 +55,8 @@ def automate():
         if os.path.isfile(file_path):
             category=classify_file(file_path)
 
-            destination=os.path.join(processed_dir, category)
-            os.makedirs(destination, exist_ok=True)
+            destination=os.path.join(processed_dir,category)
+            os.makedirs(destination,exist_ok=True)
 
             shutil.move(file_path, destination)
             print(f"{file} is {category}")
