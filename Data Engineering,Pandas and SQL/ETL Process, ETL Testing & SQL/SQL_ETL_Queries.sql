@@ -66,9 +66,9 @@ desc airbnb_stage;
 alter table airbnb_stage drop `index`;
 alter table airbnb_stage drop `Unnamed: 0`;
 
-SELECT DISTINCT `Construction year`
-FROM airbnb_stage
-ORDER BY `Construction year` + 0;
+select DISTINCT `Construction year`
+from airbnb_stage
+order by `Construction year` + 0;
 
 create table airbnb_data (
     `id` BIGINT PRIMARY KEY,
@@ -91,17 +91,17 @@ create table airbnb_data (
     `minimum nights` INT,
     `number of reviews` INT);
     
-SELECT 
+select
     `Construction year`, `Construction year` + 0 AS year_int,
     `minimum nights`, `minimum nights` + 0 AS nights_int,
     `number of reviews`, `number of reviews` + 0 AS reviews_int
-FROM airbnb_stage
+from airbnb_stage
 LIMIT 10;
 
-SELECT id, price,`service fee`, lat, `long`
-FROM airbnb_stage WHERE price = '' OR `service fee` = '' OR lat = '' OR `long` = '';
+select id, price,`service fee`, lat, `long`
+from airbnb_stage WHERE price = '' OR `service fee` = '' OR lat = '' OR `long` = '';
 
-INSERT INTO airbnb_data
+insert into airbnb_data
 SELECT
     `id`,
     `NAME`,

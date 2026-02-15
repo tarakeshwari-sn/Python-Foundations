@@ -74,7 +74,7 @@ modify `price` DECIMAL(10,2) NOT NULL,
 modify `service fee` DECIMAL(10,2) NOT NULL;
 
 alter table airbnb_data ADD PRIMARY KEY (id);
-
+desc airbnb_data;
 select COUNT(*) AS bad_instant_bookable FROM airbnb_data WHERE instant_bookable IS NULL OR instant_bookable = '';
 select COUNT(*) AS bad_country_code FROM airbnb_data WHERE `country code` IS NULL OR `country code` = '';
 select COUNT(*) AS bad_country FROM airbnb_data WHERE `country` IS NULL OR `country` = '';
