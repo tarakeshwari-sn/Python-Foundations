@@ -20,13 +20,10 @@ if raw_password is None:
     print("ERROR: MYSQL_PASSWORD environment variable not set.")
     sys.exit(1)
 
-password = quote_plus(raw_password)
+password=quote_plus(raw_password)
 
-mysql_configG = {
-    "user":"root",
-    "password":password,
-    "host":"localhost",
-    "port":"3306",
+mysql_configG = {"user":"root","password":password,
+    "host":"localhost","port":"3306",
     "database":"shark_pipeline"}
 
 def load_data(path):
@@ -49,17 +46,16 @@ def clean_data(df):
 
     df.loc[:,"fatal_clean"]=df["fatal_(y/n)"].map({"Y": 1,"N": 0})
 
-    df.loc[:, "age"] = pd.to_numeric(df["age"], errors="coerce")
+    df.loc[:,"age"] = pd.to_numeric(df["age"],errors="coerce")
 
     df.loc[:,"sex"]=(df["sex"].astype(str).str.upper().str.strip().replace({"M": "Male", "F": "Female"}))
 
-    df.loc[:,"year"]=pd.to_numeric(df["year"], errors="coerce")
+    df.loc[:,"year"]=pd.to_numeric(df["year"],errors="coerce")
 
     df = df[df["year"].notna()].copy()
 
     print("Cleaning completed.")
     return df
-
 
 #Data Transformation
 def transform_data(df):
@@ -84,13 +80,12 @@ def calculate_kpis(df):
         "most_common_activity": df["activity"].mode()[0],
         "peak_decade": df["decade"].mode()[0]}
 
-    for k, v in kpis.items():
+    for k,v in kpis.items():
         print(f"{k}: {v}")
-
     return kpis
 
 #SQL Export
-def export_to_mysql(df, config):
+def export_to_mysql(df,config):
 
     try:
         connection_string = (f"mysql+mysqlconnector://{config['user']}:{config['password']}"
