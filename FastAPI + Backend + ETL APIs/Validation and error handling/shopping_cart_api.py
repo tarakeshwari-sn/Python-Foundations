@@ -1,5 +1,5 @@
-from fastapi import FastAPI,Depends,HTTPException,status
-from pydantic import BaseModel,ConfigDict
+from fastapi import FastAPI,Depends,HTTPException,status,Query
+from pydantic import BaseModel
 from sqlalchemy import Column,Integer,String,create_engine,Float,ForeignKey
 from sqlalchemy.orm import declarative_base,sessionmaker,Session,relationship
 from sqlalchemy.exc import SQLAlchemyError
@@ -99,43 +99,52 @@ class CartItemSchema(BaseModel):
     class Config:
         from_attributes=True
 
-@app.post("/users/", response_model=UserSchema)
-def create_user(user:UserSchema,db:Session=Depends(get_db)):
-    db_user=User(id=user.id, username=user.username, email=user.email)
+@app.post("/users/",response_model=UserSchema)
+def create_user(id:int=Query(...,description="User ID"),
+    username:str=Query(...,description="Username"),
+    email:str=Query(...,description="Email"),
+    db:Session=Depends(get_db)):
+    user = UserSchema(id=id, username=username, email=email)
+
+    db_user = User(id=user.id, username=user.username, email=user.email)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
     return db_user
 
-@app.post("/products/", response_model=ProductSchema)
-def create_product(product=ProductSchema,db:Session=Depends(get_db),prodUct_id:int =0):
-    db_product=Product(id=product.id,name=product.name,price=product.price)
+@app.post("/products/",response_model=ProductSchema)
+def create_product(id:int=Query(..., description="Product ID"),
+    name:str=Query(..., description="Product name"),
+    price:float=Query(...,description="Product price"),
+    db:Session=Depends(get_db)):
+    product=ProductSchema(id=id, name=name, price=price)
+
+    db_product=Product(id=product.id, name=product.name, price=product.price)
     db.add(db_product)
     db.commit()
     db.refresh(db_product)
     return db_product
 
 @app.post("/cart/{user_id}/add")
-def add_to_cart(user_id:int,item: CartItemSchema, db:Session=Depends(get_db)):
-    user=db.query(User).filter(User.id==user_id).first()
-    product=db.query(Product).filter(Product.id==item.product_id).first()
+def add_to_cart(
+    user_id:int,
+    product_id:int=Query(..., description="Product ID"),
+    quantity:int=Query(..., description="Quantity"),
+    db: Session=Depends(get_db)):
+    item=CartItemSchema(product_id=product_id, quantity=quantity)
+
+    user=db.query(User).filter(User.id == user_id).first()
+    product=db.query(Product).filter(Product.id == item.product_id).first()
     if not user or not product:
-        raise HTTPException(status_code=404,detail="User or Product not found")
+        raise HTTPException(status_code=404, detail="User or Product not found")
 
-    cart_item=db.query(CartItem).filter(CartItem.user_id==user_id,
-                                        CartItem.product_id==item.product_id).first()
+    cart_item=db.query(CartItem).filter(CartItem.user_id == user_id, 
+                                        CartItem.product_id == item.product_id).first()
+
     if cart_item:
-        cart_item.quantity+=item.quantity
+        cart_item.quantity+= item.quantity
     else:
-        cart_item=CartItem(user_id=user_id,product_id=item.product_id,quantity=item.quantity)
+        cart_item = CartItem(user_id=user_id, product_id=item.product_id, quantity=item.quantity)
         db.add(cart_item)
-
     db.commit()
     return {"message": f"Added {item.quantity} of {product.name} to {user.username}'s cart."}
-
-@app.get("/cart/{user_id}")
-def view_cart(user_id: int,db:Session= Depends(get_db)):
-    cart_items=db.query(CartItem).filter(CartItem.user_id==user_id).all()
-    if not cart_items:
-        return {"message": "Cart is empty"}
-    return [{"product": item.product.name, "quantity": item.quantity} for item in cart_items]

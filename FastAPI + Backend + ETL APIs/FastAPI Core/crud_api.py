@@ -1,6 +1,6 @@
-from fastapi import FastAPI, Depends,HTTPException,status
+from fastapi import FastAPI,Depends,HTTPException,status
 from pydantic import BaseModel,ConfigDict
-from sqlalchemy import Column, Integer,String,create_engine
+from sqlalchemy import Column,Integer,String,create_engine
 from sqlalchemy.orm import declarative_base,sessionmaker,Session
 from sqlalchemy.exc import SQLAlchemyError
 import os
@@ -9,21 +9,41 @@ from dotenv import load_dotenv
 from urllib.parse import quote_plus
 
 load_dotenv()
+raw_user=os.getenv("user")
+if not raw_user:
+    print("ERROR: user environment variable not set.")
+    sys.exit(1)
+raw_host=os.getenv("host")
+if not raw_host:
+    print("ERROR: host environment variable not set.")
+    sys.exit(1)
 raw_password=os.getenv("MYSQL_PASSWORD")
 if not raw_password:
     print("ERROR: MYSQL_PASSWORD environment variable not set.")
     sys.exit(1)
+raw_port=os.getenv("port")
+if not raw_port:
+    print("ERROR: port environment variable not set.")
+    sys.exit(1)
+raw_database=os.getenv("database")
+if not raw_database:
+    print("ERROR: database environment variable not set.")
+    sys.exit(1)
 
+user=quote_plus(raw_user)
+host=quote_plus(raw_host)
 password=quote_plus(raw_password)
-DATABASE_URL=(f"mysql+pymysql://root:{password}@localhost:3306/crud_api")
+port=quote_plus(raw_port)
+database=quote_plus(raw_database)
 
+DATABASE_URL=(f"mysql+pymysql://{user}:{password}@{host}:{port}/{database}")
 try:
-    engine=create_engine(DATABASE_URL,pool_pre_ping=True,echo=False)
+    engine=create_engine(DATABASE_URL)
 except SQLAlchemyError as e:
     print("Database connection failed:", e)
     sys.exit(1)
 
-SessionLocal=sessionmaker(autocommit=False,autoflush=False,bind=engine)
+SessionLocal=sessionmaker(bind=engine)
 Base=declarative_base()
 
 class Item(Base):
@@ -68,7 +88,7 @@ def create_item(item:ItemCreate,db:Session=Depends(get_db)):
 def read_item(item_id: int, db: Session=Depends(get_db)):
     item=db.query(Item).filter(Item.id==item_id).first()
     if not item:
-        raise HTTPException(status_code=404, detail="Item not found")
+        raise HTTPException(status_code=404,detail="Item not found")
     return item
 
 # READ (All)
@@ -82,10 +102,25 @@ def update_item(item_id: int,item:ItemUpdate,db:Session=Depends(get_db)):
     db_item = db.query(Item).filter(Item.id==item_id).first()
 
     if not db_item:
-        raise HTTPException(status_code=404, detail="Item not found")
+        raise HTTPException(status_code=404,detail="Item not found")
 
     db_item.name=item.name
     db_item.description=item.description
+    db.commit()
+    db.refresh(db_item)
+    return db_item
+
+#Patch (Partial Update)
+@app.patch("/items/{item_id}", response_model=ItemResponse)
+def patch_item(item_id: int, item: ItemUpdate, db: Session = Depends(get_db)):
+    db_item = db.query(Item).filter(Item.id == item_id).first()
+    if not db_item:
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    update_data = item.dict(exclude_unset=True)
+    for key,value in update_data.items():
+        setattr(db_item,key,value)
+
     db.commit()
     db.refresh(db_item)
     return db_item
