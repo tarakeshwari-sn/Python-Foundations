@@ -70,7 +70,7 @@ async def run_task(task:Task,tasks:List[Task]):
         pass
 
 async def ainput(prompt: str) -> str:
-    return await asyncio.get_event_loop().run_in_executor(None,sys.stdin.readline)
+    return await asyncio.get_event_loop().run_in_executor(None, sys.stdin.readline)
 
 async def main():
     tasks = load_tasks()
