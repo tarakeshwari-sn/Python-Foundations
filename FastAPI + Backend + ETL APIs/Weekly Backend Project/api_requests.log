@@ -1,0 +1,19 @@
+2026-02-24 10:39:40,134 - INFO - User tara logged in successfully
+2026-02-24 10:40:22,699 - INFO - User tara loaded 6175 records into database
+2026-02-24 10:40:32,911 - INFO - User tara retrieved all attack records
+2026-02-24 10:44:35,053 - INFO - User tara logged in successfully
+2026-02-24 10:45:32,015 - INFO - User tara loaded 6175 records into database
+2026-02-24 10:46:20,404 - INFO - User tara retrieved all attack records
+2026-02-24 10:53:16,029 - INFO - User tara logged in successfully
+2026-02-24 10:53:36,389 - INFO - User tara logged in successfully
+2026-02-24 10:53:58,164 - INFO - User tara loaded 6175 records into database
+2026-02-24 10:55:55,445 - INFO - User tara created new attack record ID 55577
+2026-02-24 10:57:35,770 - INFO - User tara retrieved attack record ID 55577
+2026-02-24 10:58:34,813 - INFO - User tara deleted attack record ID 55566
+2026-02-24 11:26:57,880 - INFO - User tara logged in successfully
+2026-02-24 11:27:19,318 - INFO - User tara logged in successfully
+2026-02-24 11:27:37,602 - INFO - User tara loaded 6175 records into database
+2026-02-24 11:27:45,979 - INFO - User tara retrieved all attack records
+2026-02-24 11:30:54,589 - INFO - User tara logged in successfully
+2026-02-24 11:31:10,534 - INFO - User tara loaded 6175 records into database
+2026-02-24 11:32:10,478 - INFO - Data exported successfully on shutdown.
