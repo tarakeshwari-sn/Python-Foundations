@@ -69,14 +69,3 @@ CREATE TABLE IF NOT EXISTS fact_payment (
     payment_status VARCHAR(50)
 );
 
-CREATE TABLE IF NOT EXISTS reconciliation_log (
-    rec_id SERIAL PRIMARY KEY,
-    topic VARCHAR(255),
-    kafka_partition INT,
-    kafka_offset BIGINT,
-    payload_id VARCHAR(255),
-    operation VARCHAR(10),
-    status VARCHAR(20),
-    error_message TEXT,
-    processed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);

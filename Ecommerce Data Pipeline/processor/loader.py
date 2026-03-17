@@ -88,28 +88,35 @@ class PostgresLoader:
 
         c_sk, date_id = res
         method = data.get('method_payment')
-        self.cursor.execute("SELECT payment_method_id FROM dim_payment WHERE method_name = %s", (method,))
+        provider = data.get('provider', 'Default')
+
+        # Improved lookup checking both method and provider
+        self.cursor.execute("SELECT payment_method_id FROM dim_payment WHERE method_name = %s AND provider = %s", (method, provider))
         pm_res = self.cursor.fetchone()
+        
         if not pm_res:
-            self.cursor.execute("INSERT INTO dim_payment (method_name, provider) VALUES (%s, %s) RETURNING payment_method_id", (method, data.get('provider', 'Default')))
+            self.cursor.execute("INSERT INTO dim_payment (method_name, provider) VALUES (%s, %s) RETURNING payment_method_id", (method, provider))
             pm_row = self.cursor.fetchone()
             if not pm_row:
-                logger.error(f"Failed to retrieve payment_method_id for {method}")
+                logger.error(f"Failed to retrieve payment_method_id for {method} ({provider})")
                 return
             pm_id = pm_row[0]
         else:
             pm_id = pm_res[0]
 
-        self.cursor.execute("""INSERT INTO fact_payment (pay_id, o_id, customer_sk, date_id, payment_method_id, amount, payment_status)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)""", (data.get('payid'), oid, c_sk, date_id, pm_id, data.get('amount'), data.get('payment_status')))
+        # fact_payment Upsert logic
+        pay_id = data.get('payid')
+        self.cursor.execute("SELECT 1 FROM fact_payment WHERE pay_id = %s", (pay_id,))
+        if self.cursor.fetchone():
+            self.cursor.execute("""UPDATE fact_payment 
+                SET amount = %s, payment_status = %s, payment_method_id = %s
+                WHERE pay_id = %s""", (data.get('amount'), data.get('payment_status'), pm_id, pay_id))
+        else:
+            self.cursor.execute("""INSERT INTO fact_payment (pay_id, o_id, customer_sk, date_id, payment_method_id, amount, payment_status)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)""", (pay_id, oid, c_sk, date_id, pm_id, data.get('amount'), data.get('payment_status')))
+        
         self.cursor.execute("UPDATE fact_sales SET payment_method_id = %s, order_status = %s WHERE o_id = %s", (pm_id, data.get('order_status'), oid))
 
-    def log_reconciliation(self, topic, partition, offset, payload_id, operation, status, error_msg=None):
-        try:
-            self.cursor.execute("""INSERT INTO reconciliation_log (topic, kafka_partition, kafka_offset, payload_id, operation, status, error_message)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)""", (topic, partition, offset, payload_id, operation, status, error_msg))
-        except Exception as e:
-            logger.error(f"Failed to log reconciliation: {e}")
 
     def commit(self):
         if self.conn: 

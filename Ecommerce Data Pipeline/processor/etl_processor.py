@@ -53,9 +53,6 @@ class ETLPipeline:
                     
                     if entity_type:
                         self.loader.load(entity_type, clean_data)
-                        
-                        self.loader.log_reconciliation(message.topic, message.partition, message.offset,
-                            payload_id, op_type, "SUCCESS")
                     
                     self.loader.commit()
 
@@ -63,13 +60,6 @@ class ETLPipeline:
                     self.loader.rollback()
                     failed_count += 1
                     log_msg(f"Failed to process message {message_count} on {message.topic}: {e}", level='error')
-                    
-                    try:
-                        self.loader.log_reconciliation(message.topic, message.partition, message.offset,
-                            None, "ERROR", "FAILED", str(e))
-                        self.loader.commit()
-                    except:
-                        self.loader.rollback()
 
             if message_count == 0:
                 log_msg("No messages found.")

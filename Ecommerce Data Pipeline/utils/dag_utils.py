@@ -10,7 +10,8 @@ data_dir = os.getenv("DATA_DIR", "/opt/airflow/data/ecommerce_daily")
 processed_dir = os.getenv("PROCESSED_DATA_DIR", "/opt/airflow/data/ecommerce_processed")
 
 def execute_ddl(filepath, **kwargs):
-    run_id, task_id = kwargs.get('run_id'), kwargs.get('ti').task_id
+    ti = kwargs.get('ti')
+    run_id, task_id = kwargs.get('run_id'), ti.task_id if ti else 'execute_ddl'
     hook = MySqlHook(mysql_conn_id="local_mysql")
     
     def log(msg):
@@ -25,7 +26,8 @@ def execute_ddl(filepath, **kwargs):
             hook.run(stmt)
 
 def load_csv_files(**kwargs):
-    run_id, task_id = kwargs.get('run_id'), kwargs.get('ti').task_id
+    ti = kwargs.get('ti')
+    run_id, task_id = kwargs.get('run_id'), ti.task_id if ti else 'load_csv'
     hook = MySqlHook(mysql_conn_id="local_mysql")
     os.makedirs(processed_dir, exist_ok=True)
     

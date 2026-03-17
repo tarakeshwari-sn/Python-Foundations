@@ -6,7 +6,8 @@ from run_logger_util import log_to_run_file
 logger = logging.getLogger(__name__)
 
 def main(**kwargs):
-    run_id, task_id = kwargs.get('run_id'), kwargs.get('ti', {}).get('task_id', 'generate_csv')
+    ti = kwargs.get('ti')
+    run_id, task_id = kwargs.get('run_id'), ti.task_id if ti else 'generate_csv'
     ds = kwargs.get('ds')
     dt = datetime.strptime(ds, "%Y-%m-%d").date() if ds else datetime.now().date()
     
