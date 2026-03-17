@@ -54,15 +54,29 @@ CREATE TABLE IF NOT EXISTS fact_sales (
     quantity INT,
     unit_price DECIMAL(10, 2),
     discount DECIMAL(10, 2),
-    total_amount DECIMAL(12, 2)
+    total_amount DECIMAL(12, 2),
+    order_status VARCHAR(50)
 );
 
 CREATE TABLE IF NOT EXISTS fact_payment (
     payment_id SERIAL PRIMARY KEY,
+    pay_id VARCHAR(36),
     o_id VARCHAR(36),
     customer_sk INT REFERENCES dim_customer(customer_sk),
     date_id INT REFERENCES dim_date(date_id),
     payment_method_id INT REFERENCES dim_payment(payment_method_id),
     amount DECIMAL(12, 2),
     payment_status VARCHAR(50)
+);
+
+CREATE TABLE IF NOT EXISTS reconciliation_log (
+    rec_id SERIAL PRIMARY KEY,
+    topic VARCHAR(255),
+    kafka_partition INT,
+    kafka_offset BIGINT,
+    payload_id VARCHAR(255),
+    operation VARCHAR(10),
+    status VARCHAR(20),
+    error_message TEXT,
+    processed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

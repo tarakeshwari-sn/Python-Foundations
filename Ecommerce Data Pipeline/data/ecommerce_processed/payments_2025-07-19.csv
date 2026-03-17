@@ -1,0 +1,81 @@
+payid,oid,amount,method_payment,provider,payment_status,order_status
+db2d71ee-d54e-488b-9a30-c49ced9d69be,9d3430d0-2133-4aec-aaaf-89c2518da217,1299.37,Credit Card,Bank,Failed,Placed
+5f56cd5d-9466-447d-bdeb-181253934935,65f665de-3fa2-4013-b1a9-6665672b43ac,1282.03,Debit Card,Bank,Failed,Cancelled
+d7d32d14-33be-42e8-aa91-a12d5f3f5bbb,d4e4447b-be85-43cd-9275-8fc58801dc54,1226.9,PayPal,Square,Pending,Shipped
+96a061b5-72a4-4311-92f6-4b99b7f6eb31,b2f06c00-19b1-4897-a9b3-3475e10879fd,15.9,UPI,Stripe,Paid,Shipped
+9480be6e-8c91-4789-b4f9-c9e9ff3fbc79,c97d3bcf-0b95-497d-95da-3782c8e6e5de,1173.56,PayPal,Bank,Pending,Cancelled
+4ba48e15-13dc-42a0-a177-5561ea6fd526,fc28110e-54f9-45c3-8320-63a30f7a7f13,4765.17,Credit Card,Square,Paid,Shipped
+408b5269-34a5-4c81-9b3f-b0e796b60d96,b4a424ac-8504-478d-a130-5a9090455ba8,130.8,Credit Card,Stripe,Paid,Cancelled
+60745b9e-94c8-4bec-9379-140ea1183374,023f0947-56ad-4200-89aa-d3b8fd13aa68,1779.7,Credit Card,Bank,Pending,Shipped
+3a1cc634-207a-49f5-b95d-02e67fb9695e,f59c5480-8b61-47fc-b91e-0248e6e2aedb,154.8,UPI,Square,Failed,Placed
+8db9980f-9002-4111-8d74-1e303507c549,d98eca3f-34ad-4a02-ab2a-bd11115cbbcb,2080.84,UPI,Stripe,Pending,Shipped
+f22984b5-4c9e-475b-86d7-cf1a03d39cf1,e21636a5-da9c-401c-9631-a2027ab7ac77,545.45,PayPal,Square,Failed,Placed
+6a06669e-5966-4898-9938-bb4052667d21,349ec371-6d75-4079-b94e-3e3ec36e3050,3183.87,Cash on Delivery,Bank,Failed,Shipped
+50959678-118c-4504-bc4d-c78f830be94d,b49f6183-007e-4abc-b214-a6cc775a39b0,181.24,UPI,Square,Pending,Shipped
+29d4ad9c-7b0f-4d2b-90b5-fc60bb911277,125f99ef-af77-4c6f-b9d9-6a96c52bf920,576.62,Cash on Delivery,PayPal,Paid,Placed
+9d7a1ac8-6636-4135-9bea-6aab97e41c03,e6deec5f-4186-4dda-919a-6b10628e30c9,838.69,Credit Card,Bank,Paid,Cancelled
+10f77379-8a76-46b0-9bb5-2bc4943cfbfc,26276d50-c575-41a7-9079-e8699be786ab,1124.7,PayPal,Square,Pending,Placed
+1ad16df3-d830-4a2b-837c-9194f2663fac,478e13cf-6175-44ac-8aa9-7d33b525b928,133.75,Credit Card,Stripe,Pending,Placed
+8cfa8844-0e2f-4b2d-928f-02a3f1a6358f,d8f12863-8173-4b5d-b34e-e1c282ccfc62,431.43,Cash on Delivery,Square,Failed,Placed
+e2b844d0-a152-4c35-8d56-769ba4f7fb7d,92117433-7e58-40b1-ac36-4697816d1d5a,1434.19,Cash on Delivery,Bank,Pending,Placed
+3039208d-d222-4de6-8cc2-fcab7d53d228,20410223-3a44-43eb-b43d-160a4b3441ad,892.41,UPI,Bank,Pending,Cancelled
+fa2f8ffb-91eb-496d-9aa2-3f2450438aeb,239eeedd-2187-4b78-b811-8f28f8ec0d43,832.41,Cash on Delivery,Stripe,Paid,Placed
+3b31c59a-1db0-4591-9c84-778f50537694,120f97cb-9f23-4750-826f-01ae54efb3e8,4655.87,UPI,Square,Failed,Cancelled
+79dfdb5a-fc3e-4b55-81c5-8f94b223fa57,31dc18e5-7baf-47cd-a643-ee4710da4fa6,699.11,Debit Card,Bank,Pending,Cancelled
+92702c8f-df92-4d59-b8da-7f98e4d96cfa,bffe4b00-7ba5-4e40-a2b4-6becfc602d52,490.11,Cash on Delivery,Square,Failed,Placed
+6bd7f4bb-a0a5-428c-b006-63beb49631c4,439dad3d-3282-469c-b5ec-deb11cc04a71,66.19,Debit Card,Stripe,Failed,Placed
+a83a6020-efaa-46ec-9d5b-2b3e70425db7,ce2c4fa6-a1be-4b9a-9581-dfb365a29831,495.43,Cash on Delivery,Bank,Failed,Cancelled
+b956fed5-2305-4288-ba53-c55c1dc1daae,ab86b2b2-b9a8-490f-a34b-01e85cadad4a,154.73,Cash on Delivery,Square,Failed,Shipped
+0fff5843-78c5-4f7c-a7b8-0c9dbfcdf8d7,13e1ab36-bc38-4183-98b0-6958eadba10d,2567.53,PayPal,Square,Failed,Cancelled
+11bf31df-effb-4c45-b972-f26423256946,8583aa4f-61ea-4086-9c63-8c332a178b30,261.3,PayPal,Square,Paid,Placed
+33f85532-35ee-4077-9769-068d0d0a91a6,f9cc7b08-6e9d-49bd-83a3-873dc1a13fa1,455.85,PayPal,PayPal,Pending,Placed
+388947d7-c468-4875-a98a-e198cce78176,cc3a05ad-8c5b-4776-bb78-ce8b4f1e0399,734.87,Debit Card,Bank,Paid,Placed
+f611cf13-1880-4b74-a28f-db53c5da82d9,c2c3057d-b149-4867-9370-9d86deb894c2,1481.85,Debit Card,Square,Pending,Cancelled
+2a6d488b-c32a-43e3-94c3-d44361655293,47f53a7c-8339-4a6f-be90-54dcd021ed04,768.19,PayPal,Stripe,Failed,Shipped
+06907ed4-1f29-4c29-b29b-25d374171780,b1173543-e45b-45c7-ba50-f1df26d6682c,1912.13,Debit Card,Square,Failed,Placed
+fbfae260-2004-41da-ba42-c4ccfe89c1e5,98159853-074c-4b4c-bc11-01101cfc0668,2807.97,Credit Card,PayPal,Paid,Placed
+beced88c-aeec-42e2-be46-1bb115b5f52d,553ff649-b611-46bb-a025-5c24e43019fa,3066.23,Debit Card,Stripe,Paid,Placed
+f20c1c9f-0ecc-4f68-bf8c-5728c66a24cd,f2ddc013-681a-456a-9449-c6a6cc4b2925,1091.39,Debit Card,Bank,Paid,Cancelled
+0f6cf973-43a0-48c1-949c-f0662ab796bb,b5901b09-ed05-4e2f-9921-f0aea8533d65,975.22,PayPal,PayPal,Failed,Placed
+ef22586c-567c-499a-9ba5-a9fb67223a7e,b3f8214a-9610-410c-a78f-a3e1ce78a9f0,1125.27,Debit Card,Square,Paid,Shipped
+4759466c-8375-4f17-954b-2bed5cf8a543,f786d4e8-0fa0-4710-ba09-a64f462b52d5,119.47,PayPal,PayPal,Paid,Cancelled
+5f62e83e-0c3d-44bf-a7a8-edd5019fa983,31dd4b1b-03ee-4d9b-8df5-10edf4d9bd80,2037.35,Cash on Delivery,Bank,Failed,Shipped
+6d23eb92-6ca6-418e-8968-3ca7899f8fec,966bbe96-65b2-41ca-82f5-a2e57ca47e6d,838.15,Cash on Delivery,Stripe,Pending,Cancelled
+e408ee20-860b-4885-b5fd-c87aff6ea38f,341b74d6-7c13-4140-ae0d-7528787bcc3e,605.29,UPI,PayPal,Paid,Cancelled
+3fcb979f-d37c-4875-ba3d-1c28f229531a,a1355633-d03e-4aad-ac73-911943543871,774.25,PayPal,PayPal,Paid,Shipped
+f2d81f81-7c91-46a1-8e43-a382ff55b235,33728f32-928a-4a9e-8d55-574dd050d893,2997.72,Credit Card,Bank,Paid,Shipped
+38cda38a-e253-4a6a-be67-92948c31f177,502c5c0a-8ff8-4214-b0a5-aa64d47b8457,473.76,Credit Card,PayPal,Paid,Shipped
+85d92d59-ff9e-4c27-8b00-c3faec3e0ac3,d45b35b5-f47c-4428-a705-e81cf7a61cac,2758.32,Debit Card,Stripe,Failed,Placed
+ee5efef4-356d-4261-8aab-98e162d9dc32,8c057e16-2354-4ad0-ae9a-160e9c1156a1,2660.2,UPI,PayPal,Failed,Placed
+726e7247-6030-4b56-9535-c38d34f4d431,04d8f66e-ac0a-45a6-83ea-b58f893c373c,1103.39,PayPal,PayPal,Failed,Placed
+4653e9da-ce00-49e9-a6b3-79947514529e,e94798b5-9536-435b-b9d3-fa9993a9631e,1848.09,Credit Card,Bank,Paid,Shipped
+82ca7dd3-ab77-42a6-9da9-d763496e8030,1912a056-125e-457c-982f-947e71638132,4745.75,Debit Card,Square,Failed,Placed
+c071fe1c-f668-4ccc-9a3f-931b7ab1ded4,5efb23ec-1bfd-44f3-aa37-3ff3fd5322b5,2488.37,Cash on Delivery,Stripe,Pending,Shipped
+c16ceb0a-e38f-43c0-916e-7c06ea81bfba,9b05f6a2-0aed-4685-b7fb-4fd0c2bc9e2b,1523.56,PayPal,PayPal,Failed,Cancelled
+b94bd9eb-d76d-414b-bd85-d107f4f46434,7f9093dd-13fb-4eaf-ae9a-d562323b999d,2816.65,UPI,Square,Pending,Cancelled
+05659df9-5986-4670-a878-4e32ed246eac,87b6d67e-bd8d-4c04-9719-0c22dc88dd6e,688.02,Debit Card,Square,Paid,Shipped
+19cce60b-e492-4a5b-92d5-423579b04217,588c32bb-7b9b-4956-a89c-b5321e085967,1236.51,Cash on Delivery,Stripe,Pending,Cancelled
+0dd24daf-afe7-437b-8b34-4fdd6dcd0cde,faf1534f-629d-4d3b-ad35-6352fb35c049,82.1,Cash on Delivery,PayPal,Paid,Cancelled
+40e97b6f-2f37-4974-9655-c99f3134eed7,bf91a24c-f9e4-4ea6-9476-67ee4337a70d,334.82,PayPal,Square,Failed,Shipped
+672ef4ec-dbc4-43de-a0b0-04b3abca6b3f,ee695b8b-235c-41d8-8982-035cb94252db,962.91,Cash on Delivery,Stripe,Failed,Shipped
+e643bbb1-f3c1-40eb-a2c2-110b6e4e48e3,f45aa886-dbe8-4385-ac54-18db169888ac,639.35,UPI,Stripe,Failed,Shipped
+a97e3b46-dfc0-43d9-a9dc-188d4c4dda97,3250ec32-8fbc-40ee-9493-d14755c0ac54,2168.77,Cash on Delivery,PayPal,Paid,Cancelled
+be3967b1-2b7b-4fb4-880b-1e2fef8753f0,e3f66225-af2b-47ed-8745-a24c6da82047,1335.32,Cash on Delivery,Stripe,Paid,Placed
+06a8866f-e850-457d-8bae-d8fcd5779b4f,d9e232e6-3634-4eff-a739-3f44725309c3,2987.93,UPI,Stripe,Failed,Placed
+868c2146-bcaa-4bba-92a1-5fb79c0c3f6e,cdbb6dbd-efef-470a-9821-622348790a0d,3310.44,UPI,Stripe,Paid,Placed
+63a007a9-1034-49aa-a335-037eef588186,a1a766fd-e297-4456-b9de-2e7dda4f7c6e,168.08,Credit Card,PayPal,Paid,Placed
+f1edec24-6306-4cd8-8d32-6ec8b2bacb79,959cedff-afc8-4b19-821d-d7e9d590da6c,421.92,PayPal,Stripe,Pending,Placed
+b8fb8cea-8884-45f3-ae3a-46bd8eef8aae,41d85203-83b3-47a8-b6f9-ac3e7dee35dd,1252.11,Credit Card,Bank,Pending,Placed
+8abb7d08-5f7d-4326-b995-4a1ebb90ba11,075d61ad-27cd-4d3e-82c2-4c645284c426,4535.32,Credit Card,Square,Pending,Cancelled
+df1ca580-5a0f-46da-a189-8649136771da,4f1f230b-2e3f-4078-8828-17d13531e199,758.66,Debit Card,Bank,Pending,Cancelled
+481a3734-81fa-48d9-9736-9f8c2beda653,fda46d73-5e3a-4214-b78e-3e617f1fc137,1826.99,Cash on Delivery,Bank,Paid,Shipped
+e0bdccb9-c665-4dd7-91f1-c7cc60885a54,4501d404-e225-40b6-8cd7-9f6f49ebd423,1260.02,Cash on Delivery,Square,Failed,Cancelled
+08fcb02e-c89f-4219-a38d-5b75ce6d5524,cc5f358a-a4da-4245-9949-adefeb3afa05,1377.6,Debit Card,Stripe,Pending,Placed
+a5f3b132-dd76-4987-99b3-5de243d1c8cf,e9ab7f4c-06d1-42fb-a0ac-5937d48cba49,462.48,UPI,PayPal,Failed,Shipped
+686c70b1-18b5-4485-b307-3a97b1e8d8de,f67d751a-0de6-4258-936e-bf1780867d28,1520.07,Cash on Delivery,PayPal,Failed,Placed
+b46687ae-1610-4297-9dcd-3f85a2a0b506,aa9033a7-c5c6-46d9-bed9-108e89a9ad7d,855.43,PayPal,PayPal,Paid,Cancelled
+fe3bb2dc-fc16-4549-b34c-d60f143bcc78,1547e193-5df1-4682-913d-77e7bf20710a,1042.69,PayPal,Square,Paid,Placed
+7555a33d-d51b-4968-867d-f57c2404da91,fd449632-edaf-4901-8e17-68861e8797e1,823.44,PayPal,Bank,Pending,Cancelled
+b0697625-db4c-4252-a4a2-ad0e1b08e0ff,d4a44461-1872-468c-9800-a116f4377397,1801.95,Debit Card,Bank,Failed,Placed
+3e200668-36a5-44dd-84b3-393cd76aa436,b4a6db71-3e4f-4024-9467-94156098bb62,839.4,PayPal,Square,Pending,Cancelled
+7cf1cd25-0da6-4888-9625-bf1e27b00669,3b34e37c-e5b0-4bfc-a3ca-8c8dfc76b2d9,142.92,Cash on Delivery,Stripe,Pending,Placed

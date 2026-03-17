@@ -1,205 +1,101 @@
 import pandas as pd
-import psycopg2
 import matplotlib.pyplot as plt
 import seaborn as sns
-from matplotlib.widgets import RadioButtons, Button
-from datetime import datetime
-import matplotlib.gridspec as gridspec
+import psycopg2
+import os
 
-# Configuration
-POSTGRES_DSN = "host=127.0.0.1 port=5432 dbname=ecommerce_olap user=airflow password=airflow"
+# Database Connection
+DSN = os.getenv("POSTGRES_DSN", "host=localhost port=5432 dbname=ecommerce_olap user=airflow password=airflow")
 
-def query(sql):
-    try:
-        conn = psycopg2.connect(POSTGRES_DSN)
-        df = pd.read_sql(sql,conn)
-        conn.close()
-        return df
-    except Exception as e:
-        print(f"Database Error: {e}")
-        return pd.DataFrame()
+def fetch_data(query):
+    with psycopg2.connect(DSN) as conn:
+        return pd.read_sql(query, conn)
 
-class EcommerceDashboard:
-    def __init__(self):
-        self.year = 2024
-        self.month = 0  # 0 means All Months
-        self.years = [2024, 2023]
-        self.months = ["All", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-        
-        # Setup Figure
-        plt.style.use("dark_background")
-        self.fig = plt.figure(figsize=(18, 10))
-        self.fig.canvas.manager.set_window_title('E-commerce Data Pipeline - Analytics Dashboard')
-        self.gs = gridspec.GridSpec(4, 4, figure=self.fig, height_ratios=[0.1, 0.45, 0.45, 0.1])
-        
-        # UI Control Areas
-        self.ax_year = self.fig.add_axes([0.02, 0.7, 0.08, 0.15], facecolor='#222222')
-        self.ax_month = self.fig.add_axes([0.02, 0.3, 0.08, 0.35], facecolor='#222222')
-        self.ax_refresh = self.fig.add_axes([0.02, 0.1, 0.08, 0.05])
-        
-        self.radio_year = RadioButtons(self.ax_year, [str(y) for y in self.years], active=0, activecolor='#00d4ff')
-        self.radio_month = RadioButtons(self.ax_month, self.months, active=0, activecolor='#00d4ff')
-        self.btn_refresh = Button(self.ax_refresh, 'REFRESH', color='#333333', hovercolor='#444444')
-        
-        self.radio_year.on_clicked(self.change_year)
-        self.radio_month.on_clicked(self.change_month)
-        self.btn_refresh.on_clicked(self.refresh)
-        
-        self.update_dashboard()
+def generate_dashboard():
+    # 1. Fetch KPIs
+    kpi_query = """
+    SELECT 
+        SUM(total_amount) as total_revenue,
+        COUNT(sales_id) as total_orders,
+        AVG(total_amount) as avg_order_value
+    FROM fact_sales;
+    """
+    kpis = fetch_data(kpi_query)
+    
+    # 2. Daily Revenue Trend (Line Chart)
+    trend_query = """
+    SELECT d.full_date, SUM(f.total_amount) as daily_revenue
+    FROM fact_sales f
+    JOIN dim_date d ON f.date_id = d.date_id
+    GROUP BY d.full_date
+    ORDER BY d.full_date;
+    """
+    trend_df = fetch_data(trend_query)
+    trend_df['full_date'] = pd.to_datetime(trend_df['full_date'])
 
-    def change_year(self, label):
-        self.year = int(label)
-        self.update_dashboard()
+    # 3. Revenue by Category (Bar Chart)
+    category_query = """
+    SELECT p.category, SUM(f.total_amount) as category_revenue
+    FROM fact_sales f
+    JOIN dim_product p ON f.product_sk = p.product_sk
+    GROUP BY p.category
+    ORDER BY category_revenue DESC;
+    """
+    category_df = fetch_data(category_query)
 
-    def change_month(self, label):
-        self.month = self.months.index(label)
-        self.update_dashboard()
+    # Create Dashboard Layout
+    fig = plt.figure(figsize=(15, 12))
+    gs = fig.add_gridspec(3, 6, height_ratios=[1, 4, 4])
+    fig.patch.set_facecolor('#f4f4f4')
+    plt.subplots_adjust(hspace=0.4, wspace=0.3)
 
-    def refresh(self, event):
-        self.update_dashboard()
+    # Title
+    fig.suptitle('E-Commerce Business Intelligence Dashboard', fontsize=24, fontweight='bold', color='#2c3e50', y=0.95)
 
-    def get_where_clause(self, year, month):
-        if month == 0:
-            return f"d.year = {year}"
-        else:
-            return f"d.year = {year} AND d.month = {month}"
+    # KPI 1: Total Revenue
+    ax_kpi1 = fig.add_subplot(gs[0, 0:2])
+    ax_kpi1.axis('off')
+    ax_kpi1.text(0.5, 0.6, 'TOTAL REVENUE', ha='center', va='center', fontsize=12, color='#7f8c8d')
+    ax_kpi1.text(0.5, 0.3, f"${kpis['total_revenue'][0]:,.2f}", ha='center', va='center', fontsize=24, fontweight='bold', color='#27ae60')
 
-    def update_dashboard(self):
-        self.fig.clear(keep_observers=True)
-        self.render_plots()
-        plt.draw()
+    # KPI 2: Total Orders
+    ax_kpi2 = fig.add_subplot(gs[0, 2:4])
+    ax_kpi2.axis('off')
+    ax_kpi2.text(0.5, 0.6, 'TOTAL ORDERS', ha='center', va='center', fontsize=12, color='#7f8c8d')
+    ax_kpi2.text(0.5, 0.3, f"{kpis['total_orders'][0]:,}", ha='center', va='center', fontsize=24, fontweight='bold', color='#2980b9')
 
-    def render_plots(self):
-        where = self.get_where_clause(self.year, self.month)
-        
-        prev_year = self.year
-        prev_month = self.month - 1
-        if prev_month < 0: 
-             prev_month = 0
-             prev_year = self.year - 1
-        elif prev_month == 0: 
-             # Let's say Jan vs Dec
-             prev_month = 12
-             prev_year = self.year - 1
-        
-        prev_where = self.get_where_clause(prev_year, prev_month)
+    # KPI 3: Avg Order Value
+    ax_kpi3 = fig.add_subplot(gs[0, 4:6])
+    ax_kpi3.axis('off')
+    ax_kpi3.text(0.5, 0.6, 'AVG ORDER VALUE', ha='center', va='center', fontsize=12, color='#7f8c8d')
+    ax_kpi3.text(0.5, 0.3, f"${kpis['avg_order_value'][0]:,.2f}", ha='center', va='center', fontsize=24, fontweight='bold', color='#8e44ad')
 
-        def get_kpis(w):
-            sql = f"""
-            SELECT SUM(total_amount) as revenue, COUNT(DISTINCT o_id) as orders,
-                   COUNT(DISTINCT customer_sk) as customers, AVG(total_amount) as aov
-            FROM fact_sales fs JOIN dim_date d ON fs.date_id = d.date_id WHERE {w}
-            """
-            return query(sql)
+    # Plot 1: Daily Revenue Trend (Line Chart)
+    ax1 = fig.add_subplot(gs[1, :])
+    sns.lineplot(data=trend_df, x='full_date', y='daily_revenue', ax=ax1, color='#e67e22', linewidth=2.5, marker='o')
+    ax1.set_title('Daily Revenue Trend', fontsize=16, fontweight='bold', pad=20)
+    ax1.set_xlabel('Date', fontsize=12)
+    ax1.set_ylabel('Revenue ($)', fontsize=12)
+    ax1.grid(True, linestyle='--', alpha=0.7)
+    plt.xticks(rotation=45)
 
-        kpi = get_kpis(where)
-        prev_kpi = get_kpis(prev_where)
-        
-        def calc_delta(curr, prev):
-            if not prev or prev == 0: return ""
-            delta = ((curr - prev) / prev) * 100
-            return f" ({'+' if delta >=0 else ''}{delta:.1f}%)"
+    # Plot 2: Revenue by Product Category (Bar Chart)
+    ax2 = fig.add_subplot(gs[2, 0:3])
+    sns.barplot(data=category_df, x='category_revenue', y='category', ax=ax2, hue='category', palette='viridis', legend=False)
+    ax2.set_title('Revenue by Category', fontsize=16, fontweight='bold', pad=20)
+    ax2.set_xlabel('Revenue ($)', fontsize=12)
+    ax2.set_ylabel('Category', fontsize=12)
 
-        # Check if data exists
-        if kpi.empty:
-            self.fig.text(0.5, 0.5, "NO DATA FOUND OR DATABASE ERROR\nCheck your Postgres connection", 
-                          fontsize=20, ha='center', color='red')
-            return
+    # Plot 3: Order Volume Distribution (Simulated/Pie)
+    ax3 = fig.add_subplot(gs[2, 3:6])
+    colors = sns.color_palette('pastel')[0:len(category_df)]
+    ax3.pie(category_df['category_revenue'], labels=category_df['category'], autopct='%1.1f%%', startangle=140, colors=colors, wedgeprops={'edgecolor': 'white'})
+    ax3.set_title('Revenue Share by Category', fontsize=16, fontweight='bold', pad=20)
 
-        rev = kpi['revenue'][0] if not pd.isna(kpi['revenue'][0]) else 0
-        ord_count = kpi['orders'][0] if not pd.isna(kpi['orders'][0]) else 0
-        cust = kpi['customers'][0] if not pd.isna(kpi['customers'][0]) else 0
-        aov = kpi['aov'][0] if not pd.isna(kpi['aov'][0]) else 0
-
-        p_rev = prev_kpi['revenue'][0] if not prev_kpi.empty and not pd.isna(prev_kpi['revenue'][0]) else 0
-        p_ord = prev_kpi['orders'][0] if not prev_kpi.empty and not pd.isna(prev_kpi['orders'][0]) else 0
-        p_aov = prev_kpi['aov'][0] if not prev_kpi.empty and not pd.isna(prev_kpi['aov'][0]) else 0
-
-        # KPI Layout (Top Row)
-        self.fig.text(0.15, 0.95, "E-COMMERCE PERFORMANCE DASHBOARD", fontsize=20, fontweight='bold', color='#00d4ff')
-        
-        self.fig.text(0.15, 0.9, f"Revenue: ${rev:,.0f}{calc_delta(rev, p_rev)}", fontsize=14)
-        self.fig.text(0.35, 0.9, f"Orders: {ord_count:,}{calc_delta(ord_count, p_ord)}", fontsize=14)
-        self.fig.text(0.55, 0.9, f"Customers: {cust:,}", fontsize=14)
-        self.fig.text(0.75, 0.9, f"AOV: ${aov:,.2f}{calc_delta(aov, p_aov)}", fontsize=14)
-
-        # Subplots
-        # 1. Revenue Trend
-        ax1 = self.fig.add_subplot(self.gs[1, 1:3])
-        trend_sql = f"""
-        SELECT d.full_date, SUM(fs.total_amount) as revenue
-        FROM fact_sales fs
-        JOIN dim_date d ON fs.date_id = d.date_id
-        WHERE {where}
-        GROUP BY d.full_date ORDER BY d.full_date
-        """
-        trend = query(trend_sql)
-        if not trend.empty:
-            sns.lineplot(data=trend, x='full_date', y='revenue', ax=ax1, color='#00d4ff', marker='o')
-            ax1.fill_between(trend['full_date'], trend['revenue'], alpha=0.2, color='#00d4ff')
-        ax1.set_title("Revenue Trend Over Time", fontsize=12)
-        plt.setp(ax1.get_xticklabels(), rotation=45)
-
-        # 2. Top Products
-        ax2 = self.fig.add_subplot(self.gs[1, 3])
-        prod_sql = f"""
-        SELECT p.pname, SUM(fs.total_amount) as revenue
-        FROM fact_sales fs
-        JOIN dim_product p ON fs.product_sk = p.product_sk
-        JOIN dim_date d ON fs.date_id = d.date_id
-        WHERE {where}
-        GROUP BY p.pname ORDER BY revenue DESC LIMIT 5
-        """
-        products = query(prod_sql)
-        if not products.empty:
-            sns.barplot(data=products, y='pname', x='revenue', ax=ax2, hue='pname', palette='viridis', legend=False)
-        ax2.set_title("Top 5 Products", fontsize=12)
-
-        # 3. Category Distribution
-        ax3 = self.fig.add_subplot(self.gs[2, 1])
-        cat_sql = f"""
-        SELECT p.category, SUM(fs.total_amount) as revenue
-        FROM fact_sales fs
-        JOIN dim_product p ON fs.product_sk = p.product_sk
-        JOIN dim_date d ON fs.date_id = d.date_id
-        WHERE {where}
-        GROUP BY p.category"""
-        category = query(cat_sql)
-        if not category.empty:
-            ax3.pie(category['revenue'], labels=category['category'], autopct='%1.1f%%', startangle=140, colors=sns.color_palette('pastel'))
-        ax3.set_title("Revenue by Category", fontsize=12)
-
-        # 4. Payment Status
-        ax4 = self.fig.add_subplot(self.gs[2, 2])
-        pay_sql = f"""
-        SELECT payment_status, COUNT(*) as count
-        FROM fact_payment fp
-        JOIN dim_date d ON fp.date_id = d.date_id
-        WHERE {where}
-        GROUP BY payment_status
-        """
-        payment = query(pay_sql)
-        if not payment.empty:
-            ax4.pie(payment['count'], labels=payment['payment_status'], autopct='%1.1f%%', wedgeprops=dict(width=0.4), colors=['#2ecc71', '#e74c3c', '#f1c40f'])
-        ax4.set_title("Payment Success Rate", fontsize=12)
-
-        # 5. Orders by Gender
-        ax5 = self.fig.add_subplot(self.gs[2, 3])
-        gender_sql = f"""
-        SELECT c.gender, COUNT(*) as count
-        FROM fact_sales fs
-        JOIN dim_customer c ON fs.customer_sk = c.customer_sk
-        JOIN dim_date d ON fs.date_id = d.date_id
-        WHERE {where}
-        GROUP BY c.gender
-        """
-        gender = query(gender_sql)
-        if not gender.empty:
-            sns.barplot(data=gender, x='gender', y='count', ax=ax5, hue='gender', palette='magma', legend=False)
-        ax5.set_title("Orders by Customer Gender", fontsize=12)
-
-        plt.tight_layout(rect=[0.1, 0, 1, 0.95])
+    # Save Dashboard
+    output_path = os.path.join(os.path.dirname(__file__), 'dashboard.png')
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    print(f"Dashboard saved to: {output_path}")
 
 if __name__ == "__main__":
-    dash = EcommerceDashboard()
-    plt.show()
+    generate_dashboard()

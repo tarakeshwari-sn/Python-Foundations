@@ -3,9 +3,27 @@ version: "3.8"
 x-airflow-env: &airflow-env
   AIRFLOW__CORE__EXECUTOR: LocalExecutor
   AIRFLOW__CORE__LOAD_EXAMPLES: "False"
-  AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: ${AIRFLOW_SQL_ALCHEMY_CONN}
+  AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: mysql+pymysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${MYSQL_HOST}:3306/${MYSQL_DATABASE}?charset=utf8mb4
   AIRFLOW__WEBSERVER__SECRET_KEY: ${AIRFLOW_SECRET_KEY}
-  PYTHONPATH: /opt/airflow/generator:/opt/airflow/processor
+  PYTHONPATH: /opt/airflow/generator:/opt/airflow/processor:/opt/airflow/reporting:/opt/airflow/utils
+  KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
+  POSTGRES_DSN: ${POSTGRES_DSN}
+  POSTGRES_USER: ${POSTGRES_USER}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  POSTGRES_DB: ${POSTGRES_DB}
+  POSTGRES_HOST: ${POSTGRES_HOST}
+  POSTGRES_PORT: ${POSTGRES_PORT}
+  MYSQL_HOST: ${MYSQL_HOST}
+  MYSQL_PORT: ${MYSQL_PORT}
+  MYSQL_DATABASE: ${MYSQL_DATABASE}
+  MYSQL_USER: ${MYSQL_USER}
+  MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+  MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+  DEBEZIUM_URL: ${DEBEZIUM_URL}
+  DEBEZIUM_CONNECTOR_SERVER_ID: ${DEBEZIUM_CONNECTOR_SERVER_ID}
+  TOPIC_PREFIX: ${TOPIC_PREFIX}
+  DATA_DIR: ${DATA_DIR}
+  PROCESSED_DATA_DIR: ${PROCESSED_DATA_DIR}
 
 services:
 
@@ -64,7 +82,7 @@ services:
       - kafka
       - mysql
     ports:
-      - "8083:8083"
+      - "8383:8083"
     environment:
       BOOTSTRAP_SERVERS: kafka:9092
       GROUP_ID: 1
@@ -82,18 +100,18 @@ services:
       - mysql
     environment:
       <<: *airflow-env
-    env_file:
-      - .env
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./generator:/opt/airflow/generator
       - ./sql:/opt/airflow/sql
       - ./data:/opt/airflow/data
       - ./processor:/opt/airflow/processor
+      - ./reporting:/opt/airflow/reporting
+      - ./utils:/opt/airflow/utils
     command: |
       bash -c "
       echo 'Waiting for MySQL...';
-      until mysql -h mysql -u ${MYSQL_USER} -p'${MYSQL_PASSWORD}' -e 'SELECT 1'; do
+      until mysql -h ${MYSQL_HOST} -u ${MYSQL_USER} -p'${MYSQL_PASSWORD}' -e 'SELECT 1'; do
         sleep 5;
       done;
 
@@ -104,8 +122,8 @@ services:
       airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@example.com --password admin || true;
 
       echo 'Creating MySQL connection';
-      airflow connections add local_mysql --conn-uri mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql:3306/${MYSQL_DATABASE} || true;
-      airflow connections add local_postgres --conn-uri 'postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}' || true;
+      airflow connections add local_mysql --conn-uri mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${MYSQL_HOST}:3306/${MYSQL_DATABASE} || true;
+      airflow connections add local_postgres --conn-uri "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/${POSTGRES_DB}" || true;
 
       echo 'Airflow initialization completed';
       "
@@ -117,16 +135,16 @@ services:
       - airflow-init
     environment:
       <<: *airflow-env
-    env_file:
-      - .env
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./generator:/opt/airflow/generator
       - ./sql:/opt/airflow/sql
       - ./data:/opt/airflow/data
       - ./processor:/opt/airflow/processor
+      - ./reporting:/opt/airflow/reporting
+      - ./utils:/opt/airflow/utils
     ports:
-      - "8080:8080"
+      - "8880:8080"
     command: airflow webserver
 
   airflow-scheduler:
@@ -137,14 +155,14 @@ services:
       - airflow-init
     environment:
       <<: *airflow-env
-    env_file:
-      - .env
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./generator:/opt/airflow/generator
       - ./sql:/opt/airflow/sql
       - ./data:/opt/airflow/data
       - ./processor:/opt/airflow/processor
+      - ./reporting:/opt/airflow/reporting
+      - ./utils:/opt/airflow/utils
     command: airflow scheduler
 
   postgres:
@@ -154,15 +172,28 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST_AUTH_METHOD=trust
     ports:
-      - "5432:5432"
+      - "5433:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U airflow -d ecommerce_olap"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
       - default
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    depends_on:
+      - kafka
+    ports:
+      - "8081:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
 
 volumes:
   mysql-data:

@@ -18,6 +18,8 @@ CREATE TABLE IF NOT EXISTS products (
     pname VARCHAR(255),
     category VARCHAR(100),
     price DECIMAL(10,2),
+    brand VARCHAR(100),
+    supplier VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -27,6 +29,7 @@ CREATE TABLE IF NOT EXISTS orders (
     cid VARCHAR(36),
     pid VARCHAR(36),
     quantity INT,
+    discount DECIMAL(10,2),
     order_date DATETIME,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (cid) REFERENCES customers(cid),
@@ -38,6 +41,7 @@ CREATE TABLE IF NOT EXISTS payments (
     oid VARCHAR(36),
     amount DECIMAL(12,2),
     method_payment VARCHAR(100),
+    provider VARCHAR(50),
     payment_status VARCHAR(50),
     order_status VARCHAR(50),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

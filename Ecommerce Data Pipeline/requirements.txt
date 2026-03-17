@@ -7,3 +7,5 @@ requests
 psycopg2-binary
 kafka-python
 apache-airflow-providers-postgres
+matplotlib
+seaborn
