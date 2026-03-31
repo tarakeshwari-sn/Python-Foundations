@@ -1,0 +1,11 @@
+apache-airflow==2.8.1
+apache-airflow-providers-mysql
+mysql-connector-python
+faker
+pandas
+requests
+psycopg2-binary
+kafka-python
+apache-airflow-providers-postgres
+matplotlib
+seaborn

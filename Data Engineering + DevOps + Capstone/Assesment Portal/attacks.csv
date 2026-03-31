@@ -1,0 +1,37 @@
+1,1. What is the difference between a list and a tuple in Python?
+2,
+3,2. How do you reverse a string in Python without using any built-in function?
+4,
+5,3. What is the difference between == and is in Python?
+,
+,4. How can you swap two variables in Python without using a temporary variable?
+,
+,5. Explain the difference between append() and extend() methods for lists.
+,
+,
+,
+,
+,
+,6. What is a Python decorator and give an example of where it might be used.
+,
+,7. How does Python's garbage collection work?
+,
+,8. Explain the difference between deep copy and shallow copy in Python.
+,
+,"9. How can you handle exceptions in Python? Provide an example using try, except, finally."
+,
+,"10. What is a Python generator, and how does it differ from a normal function?"
+,
+,
+,
+,Advanced / Practical Python
+,
+,11. Write a Python function to check if a number is prime.
+,
+,12. How can you read a CSV file in Python and convert it into a dictionary?
+,
+,"13. What is list comprehension, and how would you use it to create a list of squares of even numbers from 1 to 20?"
+,
+,14. Explain the concept of Python’s Global Interpreter Lock (GIL).
+,
+,15. How would you merge two dictionaries in Python efficiently?

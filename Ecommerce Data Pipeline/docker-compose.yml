@@ -1,0 +1,202 @@
+version: "3.8"
+
+x-airflow-env: &airflow-env
+  AIRFLOW__CORE__EXECUTOR: LocalExecutor
+  AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+  AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: mysql+pymysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${MYSQL_HOST}:3306/${MYSQL_DATABASE}?charset=utf8mb4
+  AIRFLOW__WEBSERVER__SECRET_KEY: ${AIRFLOW_SECRET_KEY}
+  PYTHONPATH: /opt/airflow/generator:/opt/airflow/processor:/opt/airflow/reporting:/opt/airflow/utils
+  KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
+  POSTGRES_DSN: ${POSTGRES_DSN}
+  POSTGRES_USER: ${POSTGRES_USER}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  POSTGRES_DB: ${POSTGRES_DB}
+  POSTGRES_HOST: ${POSTGRES_HOST}
+  POSTGRES_PORT: ${POSTGRES_PORT}
+  MYSQL_HOST: ${MYSQL_HOST}
+  MYSQL_PORT: ${MYSQL_PORT}
+  MYSQL_DATABASE: ${MYSQL_DATABASE}
+  MYSQL_USER: ${MYSQL_USER}
+  MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+  MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+  DEBEZIUM_URL: ${DEBEZIUM_URL}
+  DEBEZIUM_CONNECTOR_SERVER_ID: ${DEBEZIUM_CONNECTOR_SERVER_ID}
+  TOPIC_PREFIX: ${TOPIC_PREFIX}
+  DATA_DIR: ${DATA_DIR}
+  PROCESSED_DATA_DIR: ${PROCESSED_DATA_DIR}
+
+services:
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
+    restart: always
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    ports:
+      - "22181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    restart: always
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    restart: always
+    command: >
+      --server-id=223344
+      --log-bin=mysql-bin
+      --binlog-format=ROW
+      --binlog-row-image=FULL
+      --local-infile=1
+      --log-bin-trust-function-creators=1
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_HOST: "%"
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+ 
+  debezium:
+    image: debezium/connect:3.0.0.Final
+    container_name: debezium
+    restart: always
+    depends_on:
+      - kafka
+      - mysql
+    ports:
+      - "8383:8083"
+    environment:
+      BOOTSTRAP_SERVERS: kafka:9092
+      GROUP_ID: 1
+      CONFIG_STORAGE_TOPIC: connect_configs
+      OFFSET_STORAGE_TOPIC: connect_offsets
+      STATUS_STORAGE_TOPIC: connect_status
+      CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      STATUS_STORAGE_REPLICATION_FACTOR: 1
+
+  airflow-init:
+    build: .
+    container_name: airflow-init
+    depends_on:
+      - mysql
+    environment:
+      <<: *airflow-env
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./generator:/opt/airflow/generator
+      - ./sql:/opt/airflow/sql
+      - ./data:/opt/airflow/data
+      - ./processor:/opt/airflow/processor
+      - ./reporting:/opt/airflow/reporting
+      - ./utils:/opt/airflow/utils
+    command: |
+      bash -c "
+      echo 'Waiting for MySQL...';
+      until mysql -h ${MYSQL_HOST} -u ${MYSQL_USER} -p'${MYSQL_PASSWORD}' -e 'SELECT 1'; do
+        sleep 5;
+      done;
+
+      echo 'Initializing Airflow DB';
+      airflow db migrate;
+
+      echo 'Creating admin user';
+      airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@example.com --password admin || true;
+
+      echo 'Creating MySQL connection';
+      airflow connections add local_mysql --conn-uri mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${MYSQL_HOST}:3306/${MYSQL_DATABASE} || true;
+      airflow connections add local_postgres --conn-uri "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/${POSTGRES_DB}" || true;
+
+      echo 'Airflow initialization completed';
+      "
+  airflow-webserver:
+    build: .
+    container_name: airflow-webserver
+    restart: always
+    depends_on:
+      - airflow-init
+    environment:
+      <<: *airflow-env
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./generator:/opt/airflow/generator
+      - ./sql:/opt/airflow/sql
+      - ./data:/opt/airflow/data
+      - ./processor:/opt/airflow/processor
+      - ./reporting:/opt/airflow/reporting
+      - ./utils:/opt/airflow/utils
+    ports:
+      - "8880:8080"
+    command: airflow webserver
+
+  airflow-scheduler:
+    build: .
+    container_name: airflow-scheduler
+    restart: always
+    depends_on:
+      - airflow-init
+    environment:
+      <<: *airflow-env
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./generator:/opt/airflow/generator
+      - ./sql:/opt/airflow/sql
+      - ./data:/opt/airflow/data
+      - ./processor:/opt/airflow/processor
+      - ./reporting:/opt/airflow/reporting
+      - ./utils:/opt/airflow/utils
+    command: airflow scheduler
+
+  postgres:
+    image: postgres:15
+    container_name: postgres_olap
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U airflow -d ecommerce_olap"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - default
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    depends_on:
+      - kafka
+    ports:
+      - "8081:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+
+volumes:
+  mysql-data:
+  postgres-data:
